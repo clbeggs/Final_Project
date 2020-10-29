@@ -6,6 +6,10 @@
 
 ---
 
+### Important Dates:
+December 7th: Final Presentation <br/>
+December 9th: Final report due
+
 ### Relavant Links:
 Original paper: [Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/pdf/1611.07004.pdf)
 
