@@ -9,6 +9,9 @@ from tkinter import ttk
 from PIL import Image
 from io import BytesIO
 
+import cv2 as cv
+import numpy as np
+from cycle_gan import CycleGan
 
 class Gui:
     def __init__(self):
@@ -46,6 +49,12 @@ class Gui:
         self.canvas.bind('<B1-Motion>', self.draw)  # Gets motion from mouse while left-click is held
 
         self.canvas.grid(row=2, column=0, columnspan=3, padx=5, pady=3)
+        
+        # TODO: organize models by input type, match to user selected class
+        # Options will be tree-cyclegan, tree-quickdraw-cyclegan, pizza-cyclegan, apple-cyclegan
+        self.tree_cycle_gan = CycleGan('tree_cyclegan', epoch=170)
+
+        # TODO: create pix2pix model for each target (apple, tree, pizza)
 
         root.mainloop()
 
@@ -63,9 +72,13 @@ class Gui:
         canvasImage = self.canvas.postscript(colormode='color')  # Get Canvas image as Unicode string
         im = Image.open(BytesIO(canvasImage.encode('utf-8')))  # Convert to image
         im = im.resize((256, 256))  # Resize 512x512 canvas to 256x256 to match ML model
-        im.show()
+        
+        # TODO: pass through right models
+        fake_image = self.tree_cycle_gan(im)
+        
+        cv.imshow("CycleGAN", fake_image)
+        cv.imshow("Pix2Pix", np.array(im)) # for now, same image
 
-        # TODO: Feed image to GAN Model
 
     # On initial left mouse click, set where the click occurred
     def setStartPoint(self, event):

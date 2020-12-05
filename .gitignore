@@ -148,3 +148,6 @@ cython_debug/
 
 # Huge datasets that we don't want to commit
 data/*
+
+# Model files
+src/checkpoints/*
