@@ -6,6 +6,12 @@
 
 ---
 
+### Downloading Weights:
+In the main directory of this repo, simply run the download script in scripts:
+```bash
+./scripts/download_models.sh
+```
+
 ### Important Dates:
 December 7th: Final Presentation <br/>
 December 9th: Final report due
