@@ -3,7 +3,7 @@
 pix2pix_dogs='10kHCpMi0qXOGNSuL7B289L2E9eviXZbi'
 pix2pix_trees='1s_r3Bz87-7WbU1WHj_HI6E3m46wOBUZj'
 pix2pix_apples='1onxTYYna-Gys4HeLGCBskEmn3USxbLF6'
-pix2pix_pizza='1VSFcfXuMz4kAFeK4WOTOzETaOuygAlQa'
+pix2pix_pizza='1uKmxHpz7ZfCPWZxhNGefJIcbehpw3hvK'
 
 cyclegan_apples_A='1vtxopfEkG6TwhfCBqdQ3tn9oYHsD3Tsl'
 cyclegan_apples_B='17GDSSFYhZFDd12ogIeDS1XM8qXlt6CES'
