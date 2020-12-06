@@ -20,6 +20,7 @@ class CycleGan():
         # Can (should?) change this to somewhere better
         self.addToSysArgv('checkpoints_dir', checkpoints_dir)
         self.addToSysArgv('model', 'cycle_gan')
+        self.addToSysArgv('eval', None)
         # uncomment to run on CPU
         # self.addToSysArgv('gpu_ids', '-1')
 
@@ -30,7 +31,8 @@ class CycleGan():
     @staticmethod
     def addToSysArgv(opt_name, value):
         sys.argv.append('--' + opt_name)
-        sys.argv.append(value)
+        if value is not None:
+            sys.argv.append(value)
 
     def __call__(self, img):
         batch_img = torchvision.transforms.ToTensor()(img)

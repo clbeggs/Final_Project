@@ -11,7 +11,7 @@ from io import BytesIO
 
 import cv2 as cv
 import numpy as np
-#from cycle_gan import CycleGan
+from cycle_gan import CycleGan
 
 class Gui:
     def __init__(self):
@@ -25,13 +25,13 @@ class Gui:
         self.size = tk.IntVar()  # Paint Brush Size
         self.size.set(5)
         self.selectedModel = tk.StringVar()  # What to generate in our GAN
-        self.selectedModel.set('tree_cyclegan')
+        self.selectedModel.set('tree')
         self.selectedGAN = tk.StringVar()  # What GAN to use for real time display
-        self.selectedGAN.set('pix2pix')
+        self.selectedGAN.set('cyclegan')
         self.canvasTitle = tk.StringVar()  # Title for drawing area
         self.canvasTitle.set('Drawing (Trees)')
         self.imageViewerTitle = tk.StringVar()  # Title for image viewing area
-        self.imageViewerTitle.set('Generated Image (Pix2Pix)')
+        self.imageViewerTitle.set('Generated Image (CycleGAN)')
 
         self.root.title("Pix2Pix GAN GUI")
         self.root.resizable(width=False, height=False)
@@ -50,13 +50,13 @@ class Gui:
 
         # Create Model Selector above image viewer
         self.modelSelectorLabel = ttk.Label(self.root, text='Select What to Generate:').grid(row=0, column=3)
-        self.treeButton = ttk.Radiobutton(self.root, text="Trees", variable=self.selectedModel, value='tree_cyclegan', command=self.selectModel)
+        self.treeButton = ttk.Radiobutton(self.root, text="Trees", variable=self.selectedModel, value='tree', command=self.selectModel)
         self.treeButton.grid(row=0, column=4)
-        self.quickDraw = ttk.Radiobutton(self.root, text="QuickDraw", variable=self.selectedModel, value='tree_quickdraw_cyclegan', command=self.selectModel)
+        self.quickDraw = ttk.Radiobutton(self.root, text="QuickDraw", variable=self.selectedModel, value='tree_quickdraw', command=self.selectModel)
         self.quickDraw.grid(row=0, column=5)
-        self.pizzaButton = ttk.Radiobutton(self.root, text="Pizza", variable=self.selectedModel, value='pizza_cyclegan', command=self.selectModel)
+        self.pizzaButton = ttk.Radiobutton(self.root, text="Pizza", variable=self.selectedModel, value='pizza', command=self.selectModel)
         self.pizzaButton.grid(row=0, column=6)
-        self.appleButton = ttk.Radiobutton(self.root, text="Apples", variable=self.selectedModel, value='apple_cyclegan', command=self.selectModel)
+        self.appleButton = ttk.Radiobutton(self.root, text="Apples", variable=self.selectedModel, value='apple', command=self.selectModel)
         self.appleButton.grid(row=0, column=7)
 
         # Create GAN Selector below model selector
@@ -66,7 +66,7 @@ class Gui:
 
         # Create Paint Size slider
         self.scaleLabel = tk.Label(self.root, text="Size").grid(row=1, column=2)
-        self.scale = tk.Scale(self.root, variable=self.size, from_=1, to=10, cursor='target', orient=tk.HORIZONTAL).grid(row=0, column=2)
+        self.scale = tk.Scale(self.root, variable=self.size, from_=1, to=30, cursor='target', orient=tk.HORIZONTAL).grid(row=0, column=2)
 
         # Create canvas to draw on, but don't pack it until adding event bindings
         self.canvasLabel = tk.Label(self.root, textvariable=self.canvasTitle, font=("Arial", 16)).grid(row=2, column=0, columnspan=3, pady=(25, 0))
@@ -83,6 +83,18 @@ class Gui:
         self.imageViewer = tk.Canvas(self.root, cursor='arrow', height=512, width=512, bg='white', highlightthickness=3, highlightbackground='grey')
         self.imageViewer.grid(row=3, column=3, columnspan=5)
 
+
+        # Initialize models
+        self.cycle_gan_models = {}
+        # NOTE: Some of the models seemed to look better at earlier epochs, 
+        # this is purely just trial and error to see what looks best
+        for name, epoch in zip(['tree', 'pizza', 'apple', 'tree_quickdraw'], [170, 'latest', 'latest', 'latest']):
+            self.cycle_gan_models[name] = CycleGan('%s_cyclegan'%name, epoch=epoch)
+
+        self.pix2pix_models = {}
+        for name, epoch in zip(['tree', 'pizza', 'apple'], ['latest', 'latest', 'latest']):
+            self.pix2pix_models[name] = None # TODO (greg) add pix2pixmodels here
+
         self.root.mainloop()
 
     def setDraw(self):
@@ -95,23 +107,27 @@ class Gui:
         self.canvas.delete('all')
         self.updateImageViewer()
 
+    # Gets the right model based on the user input
+    def getModel(self):
+        model = None
+        if self.selectedGAN.get() == 'pix2pix':
+            model = self.pix2pix_models[self.selectedModel.get()]
+        elif self.selectedGAN.get() == 'cyclegan':
+            model = self.cycle_gan_models[self.selectedModel.get()]
+        else:
+            raise ValueError("Unknown model!")
+        
+        return model
+
     # Called on left-click release to update image in real time
     def updateImageViewer(self, event=None):
         canvasImage = self.getImageFromCanvas()
 
-        # Pass drawn image to GAN and display output
-        if self.selectedGAN.get() == 'pix2pix':
-            #TODO: Generate Pix2Pix Image and display it
-            ## self.pix2pix = Pix2Pix(self.selectedModel.get())
-            ## pix2pixImage = self.pix2pix.generate_image(canvasImage)
-            pix2pixImage = canvasImage.resize((512, 512))  # TODO: Replace canvasImage with pix2pixImage
-            self.im2 = ImageTk.PhotoImage(pix2pixImage)
-
-        elif self.selectedGAN.get() == 'cyclegan':
-            #self.tree_cycle_gan = CycleGAN(self.selectedModel.get(), epoch=170)
-            #cycleGanImage = self.tree_cycle_gan(canvasImage)
-            cycleGanImage = canvasImage.resize((512, 512))  # TODO: Replace canvasImage with cycleGanImage
-            self.im2 = ImageTk.PhotoImage(cycleGanImage)
+        model = self.getModel()
+    
+        generated_img = Image.fromarray(model(canvasImage)).resize((512, 512))
+        
+        self.im2 = ImageTk.PhotoImage(generated_img)
 
         # Now that we have the image, actually display it
         self.imageViewer.create_image(0, 0, image=self.im2, anchor=tk.NW)
@@ -126,20 +142,18 @@ class Gui:
         # Get 256x256 image drawn on canvas
         canvasImage = self.getImageFromCanvas()
 
-        #TODO: organize models by input type, match to user selected class
-        # self.selectedModel.get() contains option from list below
-        #Options will be tree-cyclegan, tree-quickdraw-cyclegan, pizza-cyclegan, apple-cyclegan (should be passed now)
-        # self.tree_cycle_gan = CycleGan(self.selectedModel.get(), epoch=170)
-        
-        # TODO: pass through right models
-        fake_image = self.tree_cycle_gan(canvasImage)
+        pix_model = self.pix2pix_models[self.selectedModel.get()]
+        cycle_model = self.cycle_gan_models[self.selectedModel.get()]
 
-        # TODO: create pix2pix model for each target (apple, tree, pizza)
+        pix_img = np.array(canvasImage) #TODO(greg) swap for pix2pix call        
+        cycle_img = cycle_model(canvasImage)
         
-        cv.imshow("CycleGAN", fake_image)
-        cv.imshow("Pix2Pix", np.array(canvasImage)) # for now, same image
 
-        # TODO: Display Drawing alongside any images generated from both CycleGAN + Pix2Pix
+        cv.imshow("Pix2Pix", pix_img)
+        cv.imshow("CycleGAN", cv.cvtColor(cycle_img, cv.COLOR_RGB2BGR))
+
+        # TODO: If tree, show two cycle gan outputs
+        # cv.imshow("CycleGAN", cycle_img)
 
 
     # On initial left mouse click, set where the click occurred
@@ -152,7 +166,7 @@ class Gui:
         color = 'black'
         if self.mode:
             color = 'white'
-        self.canvas.create_line(self.x, self.y, event.x, event.y, width=self.size.get(), smooth=True, fill=color)
+        self.canvas.create_line(self.x, self.y, event.x, event.y, width=self.size.get(), smooth=True, fill=color, capstyle=tk.ROUND)
         self.x = event.x
         self.y = event.y
 
