@@ -1,6 +1,6 @@
 # Packages from CycleGAN repo: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 import sys
-sys.path.append('../../../pytorch-CycleGAN-and-pix2pix/')
+sys.path.append('../../pytorch-CycleGAN-and-pix2pix/')
 from models import create_model
 from options.test_options import TestOptions
 from util import util
@@ -11,7 +11,7 @@ import torch
 import torchvision
 
 class CycleGan():
-    def __init__(self, name, checkpoints_dir='../../../pytorch-CycleGAN-and-pix2pix/checkpoints/', epoch='latest'):
+    def __init__(self, name, checkpoints_dir='../checkpoints/', epoch='latest'):
         # Setup sys.argv, since argparse is used in the CycleGAN repo
         self.addToSysArgv('dataroot', 'N/A')
         self.addToSysArgv('name', name)
