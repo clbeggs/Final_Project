@@ -95,6 +95,7 @@ class Gui:
         self.pix2pix_models = {}
         for name, epoch in zip(['trees', 'pizza', 'apples'], ['latest', 'latest', 'latest']):
             self.pix2pix_models[name] = Pix2Pix('pix2pix_%s'%name,epoch=epoch)
+        self.pix2pix_models['quickdraw_trees'] = self.pix2pix_models['trees']
 
         self.root.mainloop()
 

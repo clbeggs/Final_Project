@@ -53,4 +53,5 @@ wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download
 echo "Downloading cyclesgan_quickdraw_trees"
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_quickdraw_trees_A -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_quickdraw_trees_A -O src/checkpoints/cyclegan_quickdraw_trees/latest_net_G_A.pth && rm -rf /tmp/cookies.txt
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_quickdraw_trees_B -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_quickdraw_trees_B -O src/checkpoints/cyclegan_quickdraw_trees/latest_net_G_B.pth && rm -rf /tmp/cookies.txt
+
 echo "Done!"

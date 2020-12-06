@@ -17,6 +17,7 @@ class Pix2Pix():
         self.addToSysArgv('checkpoints_dir', '../checkpoints')
         self.addToSysArgv('model', network_type)
         self.addToSysArgv('gpu_ids','0') if use_gpu else self.addToSysArgv('gpu_ids','-1')
+        self.addToSysArgv('direction','AtoB')
 
         opt = TestOptions().parse()
         self.model = create_model(opt)
@@ -27,7 +28,7 @@ class Pix2Pix():
         batch_img = batch_img.reshape(1, *batch_img.shape)
         
         # Don't care about A->B, use all ones
-        self.model.set_input({'B' : batch_img, 'A': torch.ones([1, 3, 256, 256]), 'A_paths' : 'N/A', 'B_paths' : 'N/A'})
+        self.model.set_input({'A' : batch_img, 'B': torch.ones([1,3,256,256]), 'A_paths' : 'N/A', 'B_paths' : 'N/A'})
         # Forward pass
         self.model.test()
 
