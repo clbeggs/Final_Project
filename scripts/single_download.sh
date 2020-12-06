@@ -10,8 +10,11 @@ cyclegan_pizza_A='1SE3YfvBWj9T6ffl39i3t_Sb6v3A_Ycy5'
 cyclegan_pizza_B='1SENzw6IGV_Gqh_f7zLsljMK6MTL33kcA'
 cyclegan_trees_A='1zBYWhdd-Q7Q5IytASKiXOJCGG91PSQuu'
 cyclegan_trees_B='1y66OzoPDET9eHozDgDRQuGkFrmyOqtEP'
-cyclegan_quickdraw_trees_A='1-C2vb8uooZce_EukwKDRzLvYcKx7ColR'
-cyclegan_quickdraw_trees_B='1Un70dWXsz327DZx97ojTeEIPnYftizmV'
+# Old cyclegan_quickdraw_trees
+#cyclegan_quickdraw_trees_A='1-C2vb8uooZce_EukwKDRzLvYcKx7ColR'
+#cyclegan_quickdraw_trees_B='1Un70dWXsz327DZx97ojTeEIPnYftizmV'
+cyclegan_quickdraw_trees_A='18FLVQpzn7Yqqta2kKd4JSx_RY_D4NVUj'
+cyclegan_quickdraw_trees_B='1UcrgpCLDOLl8OlB5YR_s83axIPqmr8Pl'
 
 if [ -z "$1" ]; then
   echo "Usage: "$0" <model_name>"
