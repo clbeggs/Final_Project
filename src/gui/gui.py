@@ -4,6 +4,7 @@ Provides a GUI to draw images and submit them to the machine learning model.
 """
 
 
+from itertools import cycle
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -52,7 +53,7 @@ class Gui:
         self.modelSelectorLabel = ttk.Label(self.root, text='Select What to Generate:').grid(row=0, column=3)
         self.treeButton = ttk.Radiobutton(self.root, text="Trees", variable=self.selectedModel, value='tree', command=self.selectModel)
         self.treeButton.grid(row=0, column=4)
-        self.quickDraw = ttk.Radiobutton(self.root, text="QuickDraw", variable=self.selectedModel, value='tree_quickdraw', command=self.selectModel)
+        self.quickDraw = ttk.Radiobutton(self.root, text="QuickDraw", variable=self.selectedModel, value='tree_quickdraw_2', command=self.selectModel)
         self.quickDraw.grid(row=0, column=5)
         self.pizzaButton = ttk.Radiobutton(self.root, text="Pizza", variable=self.selectedModel, value='pizza', command=self.selectModel)
         self.pizzaButton.grid(row=0, column=6)
@@ -86,11 +87,9 @@ class Gui:
 
         # Initialize models
         self.cycle_gan_models = {}
-        # NOTE: Some of the models seemed to look better at earlier epochs, 
-        # this is purely just trial and error to see what looks best
-        for name, epoch in zip(['tree', 'pizza', 'apple', 'tree_quickdraw'], [170, 'latest', 'latest', 'latest']):
-            self.cycle_gan_models[name] = CycleGan('%s_cyclegan'%name, epoch=epoch)
-
+        for name in ['tree', 'pizza', 'apple', 'tree_quickdraw_2']:
+            self.cycle_gan_models[name] = CycleGan('%s_cyclegan'%name, epoch='cyclegan_%s'%name)
+            
         self.pix2pix_models = {}
         for name, epoch in zip(['tree', 'pizza', 'apple'], ['latest', 'latest', 'latest']):
             self.pix2pix_models[name] = None # TODO (greg) add pix2pixmodels here
@@ -172,14 +171,7 @@ class Gui:
 
     def selectModel(self):
         modelSelected = self.selectedModel.get()
-        if modelSelected == 'tree_cyclegan':
-            self.canvasTitle.set('Drawing (Trees)')
-        elif modelSelected == 'tree_quickdraw_cyclegan':
-            self.canvasTitle.set('Drawing (Trees Quickdraw)')
-        elif modelSelected == 'pizza_cyclegan':
-            self.canvasTitle.set('Drawing (Pizza)')
-        elif modelSelected == 'apple_cyclegan':
-            self.canvasTitle.set('Drawing (Apples)')
+        self.canvasTitle.set('Drawing (%s)'%modelSelected)
         self.root.update()
 
     def selectGan(self):
