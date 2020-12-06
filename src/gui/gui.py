@@ -88,8 +88,8 @@ class Gui:
 
         # Initialize models
         self.cycle_gan_models = {}
-        for name in ['tree', 'pizza', 'apple', 'tree_quickdraw_2']:
-            self.cycle_gan_models[name] = CycleGan('%s_cyclegan'%name, epoch='cyclegan_%s'%name)
+        for name in ['trees', 'pizza', 'apples', 'quickdraw_trees']:
+            self.cycle_gan_models[name] = CycleGan('cyclegan_%s'%name, epoch='latest')
             
         self.pix2pix_models = {}
         for name, epoch in zip(['trees', 'pizza', 'apples'], ['latest', 'latest', 'latest']):
@@ -146,15 +146,12 @@ class Gui:
         pix_model = self.pix2pix_models[self.selectedModel.get()]
         cycle_model = self.cycle_gan_models[self.selectedModel.get()]
 
-        pix_img = np.array(canvasImage) #TODO(greg) swap for pix2pix call        
+        pix_img = pix_model(canvasImage)
         cycle_img = cycle_model(canvasImage)
         
 
-        cv.imshow("Pix2Pix", pix_img)
+        cv.imshow("Pix2Pix", cv.cvtColor(pix_img, cv.COLOR_RGB2BGR))
         cv.imshow("CycleGAN", cv.cvtColor(cycle_img, cv.COLOR_RGB2BGR))
-
-        # TODO: If tree, show two cycle gan outputs
-        # cv.imshow("CycleGAN", cycle_img)
 
 
     # On initial left mouse click, set where the click occurred

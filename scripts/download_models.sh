@@ -37,20 +37,20 @@ echo "Downloading pix2pix_pizza..."
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$pix2pix_pizza -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$pix2pix_pizza -O src/checkpoints/pix2pix_pizza/latest_net_G.pth && rm -rf /tmp/cookies.txt
 echo "Done with pix2pix!"
 
-echo "Downloading cyclesgan_apples"
+echo "Downloading cyclegan_apples"
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_apples_A -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_apples_A -O src/checkpoints/cyclegan_apples/latest_net_G_A.pth && rm -rf /tmp/cookies.txt
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_apples_B -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_apples_B -O src/checkpoints/cyclegan_apples/latest_net_G_B.pth && rm -rf /tmp/cookies.txt
 
-echo "Downloading cyclesgan_pizza"
+echo "Downloading cyclegan_pizza"
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_pizza_A -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_pizza_A -O src/checkpoints/cyclegan_pizza/latest_net_G_A.pth && rm -rf /tmp/cookies.txt
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_pizza_B -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_pizza_B -O src/checkpoints/cyclegan_pizza/latest_net_G_B.pth && rm -rf /tmp/cookies.txt
 
-echo "Downloading cyclesgan_trees"
+echo "Downloading cyclegan_trees"
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_trees_A -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_trees_A -O src/checkpoints/cyclegan_trees/latest_net_G_A.pth && rm -rf /tmp/cookies.txt
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_trees_B -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_trees_B -O src/checkpoints/cyclegan_trees/latest_net_G_B.pth && rm -rf /tmp/cookies.txt
 
 
-echo "Downloading cyclesgan_quickdraw_trees"
+echo "Downloading cyclegan_quickdraw_trees"
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_quickdraw_trees_A -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_quickdraw_trees_A -O src/checkpoints/cyclegan_quickdraw_trees/latest_net_G_A.pth && rm -rf /tmp/cookies.txt
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='$cyclegan_quickdraw_trees_B -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id="$cyclegan_quickdraw_trees_B -O src/checkpoints/cyclegan_quickdraw_trees/latest_net_G_B.pth && rm -rf /tmp/cookies.txt
 
