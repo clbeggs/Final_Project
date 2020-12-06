@@ -12,6 +12,7 @@ from io import BytesIO
 import cv2 as cv
 import numpy as np
 from cycle_gan import CycleGan
+from pix2pix import Pix2Pix
 
 class Gui:
     def __init__(self):
@@ -25,7 +26,7 @@ class Gui:
         self.size = tk.IntVar()  # Paint Brush Size
         self.size.set(5)
         self.selectedModel = tk.StringVar()  # What to generate in our GAN
-        self.selectedModel.set('tree')
+        self.selectedModel.set('trees')
         self.selectedGAN = tk.StringVar()  # What GAN to use for real time display
         self.selectedGAN.set('cyclegan')
         self.canvasTitle = tk.StringVar()  # Title for drawing area
@@ -50,13 +51,13 @@ class Gui:
 
         # Create Model Selector above image viewer
         self.modelSelectorLabel = ttk.Label(self.root, text='Select What to Generate:').grid(row=0, column=3)
-        self.treeButton = ttk.Radiobutton(self.root, text="Trees", variable=self.selectedModel, value='tree', command=self.selectModel)
+        self.treeButton = ttk.Radiobutton(self.root, text="Trees", variable=self.selectedModel, value='trees', command=self.selectModel)
         self.treeButton.grid(row=0, column=4)
-        self.quickDraw = ttk.Radiobutton(self.root, text="QuickDraw", variable=self.selectedModel, value='tree_quickdraw', command=self.selectModel)
+        self.quickDraw = ttk.Radiobutton(self.root, text="QuickDraw", variable=self.selectedModel, value='quickdraw_trees', command=self.selectModel)
         self.quickDraw.grid(row=0, column=5)
         self.pizzaButton = ttk.Radiobutton(self.root, text="Pizza", variable=self.selectedModel, value='pizza', command=self.selectModel)
         self.pizzaButton.grid(row=0, column=6)
-        self.appleButton = ttk.Radiobutton(self.root, text="Apples", variable=self.selectedModel, value='apple', command=self.selectModel)
+        self.appleButton = ttk.Radiobutton(self.root, text="Apples", variable=self.selectedModel, value='apples', command=self.selectModel)
         self.appleButton.grid(row=0, column=7)
 
         # Create GAN Selector below model selector
@@ -88,12 +89,12 @@ class Gui:
         self.cycle_gan_models = {}
         # NOTE: Some of the models seemed to look better at earlier epochs, 
         # this is purely just trial and error to see what looks best
-        for name, epoch in zip(['tree', 'pizza', 'apple', 'tree_quickdraw'], [170, 'latest', 'latest', 'latest']):
-            self.cycle_gan_models[name] = CycleGan('%s_cyclegan'%name, epoch=epoch)
+        for name, epoch in zip(['trees', 'pizza', 'apples', 'quickdraw_trees'], ['latest', 'latest', 'latest', 'latest']):
+            self.cycle_gan_models[name] = CycleGan('cyclegan_%s'%name, epoch=epoch)
 
         self.pix2pix_models = {}
-        for name, epoch in zip(['tree', 'pizza', 'apple'], ['latest', 'latest', 'latest']):
-            self.pix2pix_models[name] = None # TODO (greg) add pix2pixmodels here
+        for name, epoch in zip(['trees', 'pizza', 'apples'], ['latest', 'latest', 'latest']):
+            self.pix2pix_models[name] = Pix2Pix('pix2pix_%s'%name,epoch=epoch)
 
         self.root.mainloop()
 

@@ -151,3 +151,4 @@ data/*
 
 # Model files
 src/checkpoints/*
+*.pth
