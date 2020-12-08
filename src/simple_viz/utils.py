@@ -19,20 +19,30 @@ def save_training_batch(train_examples, solver):
     images = []
 
     for ex, i in train_examples:
+        ex = ex.detach().numpy()
         if solver.DC:
-            ex = ex[0][0].detach().numpy()
+            ex = ex[0][0]
+            x, y = np.mgrid[-2:2:.0625, -2:2:.0625]
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.set_title("Generated Data - Epoch: %d" % i)
+            ax.scatter(x, y, ex, cmap=cm.jet, linewidth=0)
+            fig.canvas.draw()
+            image = np.frombuffer(fig.canvas.tostring_rgb(), dtype='uint8')
+            image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+            images.append(image)
+            plt.close()
+        else:
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.set_title("Generated Data - Epoch: %d" % i)
+            ax.scatter(ex[:, 0], ex[:, 1], ex[:, 2], cmap=cm.jet, linewidth=0)
+            fig.canvas.draw()
+            image = np.frombuffer(fig.canvas.tostring_rgb(), dtype='uint8')
+            image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+            images.append(image)
+            plt.close()
 
-        x, y = np.mgrid[-2:2:.0625, -2:2:.0625]
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.set_title("Generated Data - Epoch: %d" % i)
-        ax.scatter(x, y, ex, cmap=cm.jet, linewidth=0)
-        fig.canvas.draw()
-        image = np.frombuffer(fig.canvas.tostring_rgb(), dtype='uint8')
-        image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-        images.append(image)
-        plt.close()
     kwargs_write = {'fps':2.0, 'quantizer':'nq'}
     imageio.mimsave(filename, images, fps=1)
 
@@ -96,3 +106,37 @@ def plot_training_result(solver) -> None:
     plt.show()
 
     save_training_batch(train_ex, solver)
+
+def plot_data(solver) -> None:
+    # Generate Data
+    with torch.no_grad():
+        noise = solver.get_noise(3)
+        generated_data = np.asarray(solver.generator(noise).cpu())  # 3 x 1 x ...
+
+    # Plot Generated data
+    fig0 = plt.figure()
+    if solver.DC:
+        x, y = np.mgrid[-2:2:.0625, -2:2:.0625]
+        ax0 = fig0.add_subplot(321, projection='3d')
+        ax0.plot_surface(x, y, generated_data[0][0])
+        ax1 = fig0.add_subplot(322, projection='3d')
+        ax1.scatter(x, y, generated_data[0][0])
+        ax2 = fig0.add_subplot(323, projection='3d')
+        ax2.plot_surface(x, y, generated_data[1][0])
+        ax3 = fig0.add_subplot(324, projection='3d')
+        ax3.scatter(x, y, generated_data[1][0])
+        ax4 = fig0.add_subplot(325, projection='3d')
+        ax4.plot_surface(x, y, generated_data[2][0])
+        ax5 = fig0.add_subplot(326, projection='3d')
+        ax5.scatter(x, y, generated_data[2][0])
+
+    else:
+        ax0 = fig0.add_subplot(311, projection='3d')
+        ax0.scatter(generated_data[0][:, 0], generated_data[0][:, 1], generated_data[0][:, 2])
+        ax1 = fig0.add_subplot(312, projection='3d')
+        ax1.scatter(generated_data[1][:, 0], generated_data[1][:, 1], generated_data[1][:, 2])
+        x, y, z = generated_data[1][:, 0], generated_data[1][:, 1], generated_data[1][:, 2]
+
+        ax2 = fig0.add_subplot(313, projection='3d')
+        ax2.plot_trisurf(x, y, z, cmap=cm.coolwarm)
+    plt.show()

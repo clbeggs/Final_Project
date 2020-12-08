@@ -1,6 +1,7 @@
 import argparse
 import os
 import random
+import sys
 
 import numpy as np
 import torch
@@ -9,7 +10,7 @@ from data import PointCloudDataset
 from models import (DC_Discriminator, DC_Generator, SimpleVizDiscriminator,
                     SimpleVizGenerator)
 from solver import GANSolver
-from utils import plot_training_result
+from utils import plot_data, plot_training_result
 
 manual_seed = 7
 torch.backends.cudnn.deterministic=True
@@ -56,19 +57,27 @@ def main(opts):
     if opts.model == "FCGAN":
         gen = SimpleVizGenerator(dim_h=opts.gen_hid_size)
         disc = SimpleVizDiscriminator(dim_h=opts.disc_hid_size)
-        solver = GANSolver(gen, disc, lr=0.001)
+        solver = GANSolver(gen, disc, lr=0.001, model=opts.model)
+
     else:
         gen = DC_Generator()
         disc = DC_Discriminator()
         gen.apply(weights_init)
         disc.apply(weights_init)
-        solver = GANSolver(gen, disc, lr=0.0002)
+        solver = GANSolver(gen, disc, lr=0.0002, model=opts.model)
 
     if opts.train is False:
         cwd = os.path.abspath('')
         filename = cwd + "/model_weights/" + opts.model
-        gen.load_state_dict(torch.load(filename + "_gen"))
-        disc.load_state_dict(torch.load(filename + "_disc"))
+
+        try:
+            gen.load_state_dict(torch.load(filename + "_gen"))
+            disc.load_state_dict(torch.load(filename + "_disc"))
+
+        except FileNotFoundError:
+            print("Need to train the models before visualizing.")
+            sys.exit(1)
+        plot_data(solver)
 
     else:
         print("TRAINING--------")
@@ -80,8 +89,10 @@ def main(opts):
 
         # Train model!
         solver.train(dataloader=loader,
-                     epochs=opts.epochs,
-                     model=opts.model)
+                     epochs=opts.epochs)
+
+        # Plot Results
+        plot_training_result(solver)
 
     # Save weights
     if opts.save_weights:
@@ -92,9 +103,6 @@ def main(opts):
         torch.save(gen.state_dict(), filename + "_gen")
         torch.save(disc.state_dict(), filename + "_disc")
 
-    # Plot Results
-    plot_training_result(solver)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -104,7 +112,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_examples', required=False, default=3, type=int)
     parser.add_argument('--data_type', required=False, default="channel_gauss")
     parser.add_argument('--forcecpu', required=False, default=False)
-    parser.add_argument('--train', required=False, default=False, type=bool)
+    parser.add_argument('--train', required=False, action='store_true')
     parser.add_argument('--gen_hid_size', required=False, default=256, type=int)
     parser.add_argument('--disc_hid_size', required=False, default=128, type=int)
     parser.add_argument('--save_weights', required=False, default=True, type=bool)

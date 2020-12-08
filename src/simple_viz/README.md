@@ -1,6 +1,18 @@
 
 
+# How to train:
+#### FCGAN:
+FCGAN: `python simple_viz.py --model=FCGAN --num_examples=3 --epochs=2000 --train`
 
+DCGAN: `python simple_viz.py --model=DCGAN --num_examples=3 --epochs=18000 --train`
+
+# How to visualize:
+DCGAN: `python simple_viz.py --model=DCGAN`
+
+
+FCGAN: `python simple_viz.py --model=FCGAN`
+
+# Code Overview
 
 ```
 simple_viz/

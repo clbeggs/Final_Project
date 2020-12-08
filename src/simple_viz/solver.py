@@ -13,11 +13,19 @@ np.random.seed(manual_seed)
 
 
 class GANSolver():
-    def __init__(self, gen, disc, lr):
+    def __init__(self, gen, disc, lr, model):
         self.generator = gen
         self.discriminator = disc
 
-        print("lr", lr)
+        if model == 'DCGAN':
+            self.gen_train_interval = 1
+            self.noise_size = self.generator.noise_size
+            self.DC = True
+        else:
+            self.gen_train_interval = 5
+            self.noise_size = (256, 3)
+            self.DC = False
+
         self.criterion = torch.nn.BCEWithLogitsLoss()
         self.discrim_optim = torch.optim.Adam(self.discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
         self.gen_optim = torch.optim.Adam(self.generator.parameters(), lr=lr, betas=(0.5, 0.999))
@@ -70,7 +78,6 @@ class GANSolver():
 
     def train(self, dataloader: torch.utils.data.DataLoader,
               epochs: int,
-              model: str,
               num_store: int = 10,
               ) -> None:
         """Train Generator and Discriminator
@@ -84,15 +91,6 @@ class GANSolver():
         """
 
         # Train Discrim more only for FC GAN
-        if model == 'DCGAN':
-            gen_train_interval = 1
-            self.noise_size = self.generator.noise_size
-            self.DC = True
-        else:
-            gen_train_interval = 5
-            self.noise_size = (256, 3)
-            self.DC = False
-
         for epoch in range(epochs):
             for i, batch in enumerate(dataloader):
 
@@ -117,7 +115,7 @@ class GANSolver():
 
                 # Train Generator on interval, as we want better discriminator
                 # This is only applicable to FC GAN
-                if i % gen_train_interval == 0:
+                if i % self.gen_train_interval == 0:
                     ###################
                     # Train Generator
                     ###################
