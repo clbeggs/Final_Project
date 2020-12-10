@@ -2,9 +2,9 @@
 
 # How to train:
 #### FCGAN:
-FCGAN: `python simple_viz.py --model=FCGAN --num_examples=3 --epochs=2000 --train`
+FCGAN: `python simple_viz.py --model=FCGAN --data_type=channel_gauss --num_examples=3 --epochs=2000 --train`
 
-DCGAN: `python simple_viz.py --model=DCGAN --num_examples=3 --epochs=18000 --train`
+DCGAN: `python simple_viz.py --model=DCGAN --data_type=full_gaussian --num_examples=3 --epochs=18000 --train`
 
 # How to visualize:
 DCGAN: `python simple_viz.py --model=DCGAN`

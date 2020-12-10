@@ -13,11 +13,12 @@ from solver import GANSolver
 from utils import plot_data, plot_training_result
 
 manual_seed = 7
-torch.backends.cudnn.deterministic=True
+torch.backends.cudnn.deterministic = True
 torch.manual_seed(manual_seed)
 random.seed(manual_seed)
 torch.cuda.manual_seed(manual_seed)
 np.random.seed(manual_seed)
+
 
 def weights_init(model):
     """Define own model weight initialization,
@@ -28,7 +29,8 @@ def weights_init(model):
     if (classname.find('Conv') != -1) and (classname.find("torch") != -1):
         torch.nn.init.normal_(model.weight, 0.0, 0.02)
 
-    elif (classname.find('BatchNorm') != -1) and (classname.find("torch") != -1):
+    elif (classname.find('BatchNorm') !=
+          -1) and (classname.find("torch") != -1):
         torch.nn.init.normal_(model.weight, 1.0, 0.02)
         torch.nn.init.zeros_(model.bias)
 
@@ -41,6 +43,7 @@ def weights_init(model):
                     torch.nn.init.normal_(param.weight, 1.0, 0.02)
                     torch.nn.init.zeros_(param.bias)
 
+
 def main(opts):
     # Choose device
     if opts.forcecpu:
@@ -51,7 +54,9 @@ def main(opts):
 
     # Init dataloader
     data = PointCloudDataset(opts.data_type, opts.num_examples)
-    loader = torch.utils.data.DataLoader(dataset=data, batch_size=opts.batchsize, shuffle=True)
+    loader = torch.utils.data.DataLoader(
+        dataset=data, batch_size=opts.batchsize, shuffle=True
+        )
 
     # Init Models
     if opts.model == "FCGAN":
@@ -88,8 +93,7 @@ def main(opts):
         print("-----------------\n\n")
 
         # Train model!
-        solver.train(dataloader=loader,
-                     epochs=opts.epochs)
+        solver.train(dataloader=loader, epochs=opts.epochs)
 
         # Plot Results
         plot_training_result(solver)
@@ -105,6 +109,7 @@ def main(opts):
 
 
 if __name__ == "__main__":
+    # yapf: disable
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', required=True, help='FCGAN, DCGAN')
     parser.add_argument('--epochs', required=False, default=18000, type=int)
@@ -118,4 +123,6 @@ if __name__ == "__main__":
     parser.add_argument('--save_weights', required=False, default=True, type=bool)
 
     opts = parser.parse_args()
+    if (opts.data_type == "channel_gauss") and (opts.model == "FCGAN"):
+        raise Exception("Can't use channel_gauss datatype with FCGAN")
     main(opts)
