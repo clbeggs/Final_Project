@@ -6,6 +6,8 @@
 
 ---
 
+# [Final Report](./A_Cool_Name_Final_Report.pdf)
+
 ### Downloading Weights:
 To download all of the weights in the correct directory, from the main directory of this repo run the following
 ```bash
@@ -29,9 +31,8 @@ model_name can be any of the following:
 December 7th: Final Presentation <br/>
 December 9th: Final report due
 
-### Relavant Links:
+### Relevant Links:
 Original paper: [Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/pdf/1611.07004.pdf)
-
 
 Tensorflow demo: https://www.tensorflow.org/tutorials/generative/pix2pix
 
